@@ -25,26 +25,21 @@ piexl_originpoint= [ u1 ;
                      v1 ;
                      1   ];
 originpoint = inv(A)*piexl_originpoint
-point
-r2 = (point(1)-originpoint(1))^2+(point(2)-originpoint(2))^2
+
+r = sqrt((point(1)-originpoint(1))^2+(point(2)-originpoint(2))^2)
 
 %radial_distortion =(1+(r^2)*DC(1)+(r^4)*DC(2))% 1+k1*r^2+k2*r^4
-%radial_distortion =(1+r^2*DC(1))
+radial_distortion =(1+r^2*DC(1))
 %radial_distortion =1
 % tangential_distortion = [ 2*DC(3)*point(1)*point(2)+DC(4)*(r^2+2*point(1)^2) ;
 %                           DC(3)*(r^2+2*point(2)^2)+2*DC(4)*point(1)*point(2)  ];
 %[2*p1*x*y+p2*(r^2+2*x^2)  p1*(r^2+2*y^2)+2*p*x*y]
 
-pointto2d = [  point(1)+r2*DC(1)*(point(1));
-               point(2)+r2*DC(1)*(point(2))  ]
-          
-c = pointto2d
-      
-
-
+pointto2d = [  point(1);
+               point(2) ]
            
            
 % k =pointto2d*radial_distortion
-
+% % c = pointto2d
 % 
 % c = (radial_distortion*pointto2d+tangential_distortion);

@@ -1,9 +1,6 @@
-function  [c] = Distortion(point)
+function  [point_Xp] = Distortion(point_pixel)
 
-% M = [2604.390249088141, 0, 656.3964270332482;
-%   0, 2612.900232314529, 469.9583986626;
-%   0, 0, 1];
-M = [2604.390249088141, 0, 640;
+M = [2604.390249088141, 0, 640
   0, 2612.900232314529, 480;
   0, 0, 1];
 %畸变系数 distortion_coeffs 摄像机的4个畸变系数：(k_1, k_2, p_1, p_2, k_3)
@@ -21,30 +18,34 @@ A = [1/dx 0 u0;
     0 1/dy v0;
     0 0 1];
 
-piexl_originpoint= [ u1 ;
-                     v1 ;
-                     1   ];
-originpoint = inv(A)*piexl_originpoint
-point
-r2 = (point(1)-originpoint(1))^2+(point(2)-originpoint(2))^2
+piexl_originpoint= [ u1;
+                     v1;
+                     1 ];
+% originpoint = [ u1*dx;
+%                 v1*dy];
+originpoint = inv(A)*piexl_originpoint;
+% point = [point(1)*dx;
+%          point(1)*dy]
+point = inv(A)*point_pixel
 
-%radial_distortion =(1+(r^2)*DC(1)+(r^4)*DC(2))% 1+k1*r^2+k2*r^4
+fx = M(1)*dx;
+fy = M(5)*dy;
+point_point_Xn = [ (point(1)-originpoint(1))/fx;
+                   (point(2)-originpoint(2))/fy
+                    ]
+r = sqrt(point_point_Xn(1)^2+point_point_Xn(2)^2);
+
+radial_distortion =(1+(r^2)*DC(1)+(r^4)*DC(2)+(r^6)*DC(5));% 1+k1*r^2+k2*r^4
 %radial_distortion =(1+r^2*DC(1))
 %radial_distortion =1
-% tangential_distortion = [ 2*DC(3)*point(1)*point(2)+DC(4)*(r^2+2*point(1)^2) ;
-%                           DC(3)*(r^2+2*point(2)^2)+2*DC(4)*point(1)*point(2)  ];
+tangential_distortion = [ 2*DC(3)*point_point_Xn(1)*point_point_Xn(2)+DC(4)*(r^2+2*point_point_Xn(1)^2) ;
+                          DC(3)*(r^2+2*point_point_Xn(2)^2)+2*DC(4)*point_point_Xn(1)*point_point_Xn(2)  ];
 %[2*p1*x*y+p2*(r^2+2*x^2)  p1*(r^2+2*y^2)+2*p*x*y]
+point_Xd = (radial_distortion*point_point_Xn+tangential_distortion);
 
-pointto2d = [  point(1)+r2*DC(1)*(point(1));
-               point(2)+r2*DC(1)*(point(2))  ]
-          
-c = pointto2d
-      
+point_Xp = [  fx*point_Xd(1)+originpoint(1);
+              fy*point_Xd(2)+originpoint(2)
+           ];
 
 
-           
-           
-% k =pointto2d*radial_distortion
 
-% 
-% c = (radial_distortion*pointto2d+tangential_distortion);

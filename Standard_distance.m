@@ -40,8 +40,8 @@ for i=1:N;
                      PointSeque(2*i);
                      1   ];
     piexl_point1_sequence = [piexl_point1_sequence piexl_point1];
-    point1 = A*piexl_point1;
-    c = Distortion(point1);
+   
+    c = Distortion(piexl_point1);
     p1 =Physical_Point(c);
     p1 = rot90(p1,1);
     point_sequence = [point_sequence;p1];
@@ -51,7 +51,6 @@ end
 size(point_sequence);
 
 for i=1:98
-    i
     piexl_point1_sequence(:,i);
     piexl_point1_sequence(:,i+1);
     %point_sequence(i,:)
@@ -60,7 +59,7 @@ for i=1:98
         continue;
     else
         {
-           norm(point_sequence(i,:)-point_sequence(i+1,:));
+         norm(point_sequence(i,:)-point_sequence(i+1,:));
         }
     end
 end
